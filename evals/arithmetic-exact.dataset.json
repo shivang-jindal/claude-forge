@@ -1,0 +1,8 @@
+[
+  { "id": "add-basic", "input": "add 2 and 3", "expected": "Result: 5" },
+  { "id": "add-negative", "input": "add -4 and 10", "expected": "Result: 6" },
+  { "id": "add-many", "input": "add 1 2 3 4", "expected": "Result: 10" },
+  { "id": "add-zero", "input": "add 0 and 0", "expected": "Result: 0" },
+  { "id": "add-negatives", "input": "add -1 -2 -3", "expected": "Result: -6" },
+  { "id": "add-decimals-ignored", "input": "add 7 and 8", "expected": "Result: 15" }
+]

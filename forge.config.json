@@ -1,0 +1,23 @@
+{
+  "provider": "mock",
+  "evals": [
+    {
+      "dataset": "evals/feature.dataset.json",
+      "trials": 3,
+      "graders": ["contains"],
+      "floor": 1.0
+    },
+    {
+      "dataset": "evals/arithmetic-exact.dataset.json",
+      "trials": 3,
+      "graders": ["exact"],
+      "floor": 1.0
+    },
+    {
+      "dataset": "evals/quality.dataset.json",
+      "trials": 2,
+      "graders": ["similarity"],
+      "floor": 1.0
+    }
+  ]
+}

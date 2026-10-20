@@ -1,0 +1,25 @@
+name: forge-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"   # native TypeScript — no install, no build
+
+      # No npm install: forge is zero-dependency and runs .ts directly.
+      - name: Run unit tests + eval gate
+        run: node src/cli.ts ci
+
+      # To grade real model output on PRs, add a secret and flip the provider:
+      #   env:
+      #     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      #   run: node src/cli.ts ci --provider anthropic

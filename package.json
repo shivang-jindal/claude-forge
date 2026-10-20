@@ -1,0 +1,66 @@
+{
+  "name": "claude-forge-cli",
+  "version": "0.2.0",
+  "description": "Config-as-code orchestration engine for AI agents. Declarative DAG workflows, executable evals with pass@k, enforceable guardrails, hooks, and a self-improving loop. Zero dependencies.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "forge": "./bin/forge.js",
+    "claude-forge": "./bin/forge.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "configs/",
+    "workflows/",
+    "evals/",
+    "examples/",
+    "forge.config.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "forge": "node src/cli.ts",
+    "test": "node --test tests/*.test.ts",
+    "test:unit": "node --test tests/engine.test.ts tests/context.test.ts tests/eval.test.ts tests/fanout.test.ts tests/learning.test.ts tests/config.test.ts tests/orchestration.test.ts tests/providers.test.ts tests/capabilities.test.ts tests/readme.test.ts",
+    "ci": "node src/cli.ts ci",
+    "prepublishOnly": "node src/cli.ts ci"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "agent-orchestration",
+    "orchestration",
+    "workflow-engine",
+    "evals",
+    "llm",
+    "llmops",
+    "workflows",
+    "hooks",
+    "guardrails",
+    "dag",
+    "pass-at-k",
+    "developer-tools",
+    "ci-cd",
+    "typescript",
+    "zero-dependencies"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivang-jindal/claude-forge.git"
+  },
+  "homepage": "https://github.com/shivang-jindal/claude-forge#readme",
+  "bugs": {
+    "url": "https://github.com/shivang-jindal/claude-forge/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

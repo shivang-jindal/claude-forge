@@ -1,0 +1,28 @@
+{
+  "name": "example-feature",
+  "description": "Plan → implement → review a small feature. Runs on the mock provider by default; add --provider anthropic for real output.",
+  "concurrency": 2,
+  "budget": { "maxTokens": 8000 },
+  "steps": [
+    {
+      "id": "plan",
+      "agent": "planner",
+      "prompt": "Summarize a plan for: add a /health endpoint that returns 200 and a JSON body.",
+      "timeoutMs": 15000
+    },
+    {
+      "id": "implement",
+      "agent": "implementer",
+      "needs": ["plan"],
+      "prompt": "Implement the plan for: add a /health endpoint.",
+      "retries": 1
+    },
+    {
+      "id": "review",
+      "agent": "python-reviewer",
+      "needs": ["implement"],
+      "prompt": "Review this change for bugs and security issues.",
+      "retries": 1
+    }
+  ]
+}

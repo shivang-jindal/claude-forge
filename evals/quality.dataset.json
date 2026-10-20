@@ -1,0 +1,5 @@
+[
+  { "id": "summary-quarterly", "input": "summarize the quarterly report", "expected": "Summary: summarize the quarterly report..." },
+  { "id": "summary-incident", "input": "summarize the incident timeline", "expected": "Summary: summarize the incident timeline..." },
+  { "id": "summary-release", "input": "summarize the release notes", "expected": "Summary: summarize the release notes..." }
+]

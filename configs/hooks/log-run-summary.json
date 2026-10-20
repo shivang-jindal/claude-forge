@@ -1,0 +1,7 @@
+{
+  "name": "log-run-summary",
+  "phases": ["run:end"],
+  "priority": 50,
+  "command": "node -e \"const d=JSON.parse(process.env.FORGE_DATA||'{}');console.log('[forge] run '+(d.workflow||'?')+' status='+(d.status||'?')+' ms='+(d.durationMs||0)+' cost='+(d.costUsd||0));process.exit(0)\"",
+  "blockOnFail": false
+}
