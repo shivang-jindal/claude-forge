@@ -59,8 +59,24 @@ jobs:
           echo "Package smoke test passed."
 
       - name: Publish to npm
-        # Requires either an NPM_TOKEN secret, or npm Trusted Publishing
-        # (OIDC) configured for this package on npmjs.com.
+        # npm's registry is the source of truth: if this version is already
+        # there, skip the publish rather than failing the whole release. This
+        # keeps the workflow re-runnable and safe after a manual first publish.
+        run: |
+          set -euo pipefail
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "$PKG@$VER is already published — skipping npm publish."
+            echo "SKIP_NPM_PUBLISH=1" >> "$GITHUB_ENV"
+          else
+            echo "Publishing $PKG@$VER"
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm
+        if: env.SKIP_NPM_PUBLISH != '1'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -69,3 +85,21 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          body: |
+            ## Install
+
+            ```bash
+            npm install -g claude-forge-cli
+            forge --help
+            ```
+
+            Or clone and run it directly — no install, no build step:
+
+            ```bash
+            git clone https://github.com/shivang-jindal/claude-forge.git
+            cd claude-forge
+            node src/cli.ts --help
+            ```
+
+            Requires **Node 24+** (native TypeScript, zero dependencies).
+
