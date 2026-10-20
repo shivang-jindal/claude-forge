@@ -49,21 +49,34 @@ to confirm nothing broke.
 
 ```bash
 # 1. Bump the version and update CHANGELOG.md
-# 2. Verify everything
-npm test
-node src/cli.ts ci
+# 2. Publish (runs the full test + eval gate first, then asks for your
+#    npm one-time password)
+node scripts/publish.mjs
 
-# 3. Tag and push — the release workflow does the rest
+# 3. Tag and push — the release workflow creates the GitHub release
 git tag v0.3.0 && git push origin v0.3.0
 ```
 
-The `release` workflow then: verifies the tag matches `package.json`, runs the test gate,
-**packs the tarball and smoke-tests the installed binary**, publishes to npm with
-provenance, and creates a GitHub release.
+The helper runs the quality gate **before** prompting, because npm's one-time
+passwords expire after ~30 seconds and the gate would otherwise eat the code's
+lifetime. If a code expires, it asks again.
 
-**npm auth** — either set an `NPM_TOKEN` repository secret, or use npm Trusted Publishing
-(OIDC) and grant this workflow `id-token: write` on npmjs.com. Trusted Publishing is
-preferable: no long-lived token.
+The `release` workflow then: verifies the tag matches `package.json`, runs the test gate,
+**packs the tarball and smoke-tests the installed binary**, publishes to npm, and creates a
+GitHub release. It is idempotent — if the version is already on the registry it skips the
+publish and just creates the release.
+
+**npm auth** — two supported paths:
+
+| Path | When | Setup |
+|---|---|---|
+| **Trusted Publishing (OIDC)** | Every release after the first | npmjs.com → your package → Settings → Trusted Publisher → GitHub Actions. Fill in: org/user `shivang-jindal`, repo `claude-forge`, workflow `release.yml`. **No token needed at all.** |
+| **`NPM_TOKEN` secret** | The first publish | Create a token at npmjs.com/settings/access-tokens, add it as a repo secret. |
+
+Note that npm **cannot** use OIDC for a package's very first publish — the Trusted
+Publisher settings page does not exist until the package is on the registry
+([npm/cli#8544](https://github.com/npm/cli/issues/8544)). So the first publish is manual
+(`node scripts/publish.mjs`), and everything after it can be fully automated.
 
 **The npm package name is `claude-forge-cli`, not `claude-forge`.** The unscoped
 `claude-forge` name on npm is already taken by an unrelated project, and the GitHub

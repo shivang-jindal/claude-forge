@@ -77,7 +77,23 @@ jobs:
 
       - name: Publish to npm
         if: env.SKIP_NPM_PUBLISH != '1'
-        run: npm publish --provenance --access public
+        # Two auth paths are supported:
+        #   1. Trusted Publishing (OIDC) — enabled on npmjs.com, no token at all.
+        #      The npm CLI detects OIDC automatically and prefers it.
+        #   2. An NPM_TOKEN repository secret, for the first publish before
+        #      Trusted Publishing has been configured.
+        #
+        # Provenance is added when the registry can generate it (public source
+        # repo); if it cannot, the publish is retried without it rather than
+        # failing the whole release.
+        run: |
+          set -euo pipefail
+          if npm publish --access public --provenance; then
+            echo "Published with provenance."
+          else
+            echo "Provenance publish failed — retrying without it."
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
